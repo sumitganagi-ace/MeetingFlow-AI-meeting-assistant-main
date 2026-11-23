@@ -4,7 +4,7 @@ MeetingFlow is an AI-powered web application that transforms meeting transcripts
 
 The goal is to help teams save time, organize meeting outcomes and track tasks efficiently.
 
-## Features
+## Features  
 
 - **AI Meeting Analysis:** Analyze meeting transcripts using Google Gemini.
 - **Automatic Task Extraction:** Identify action items, owners and deadlines.
