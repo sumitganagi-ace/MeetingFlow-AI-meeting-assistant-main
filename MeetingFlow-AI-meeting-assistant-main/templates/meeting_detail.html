@@ -1,0 +1,924 @@
+
+{% extends "base.html" %}
+
+{% block title %}Meeting Results | MeetingFlow{% endblock %}
+
+{% block extra_style %}
+.result-header {
+    margin-bottom: 24px;
+}
+
+.result-header h1 {
+    margin-bottom: 8px;
+    overflow-wrap: anywhere;
+}
+
+.status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: #e6f7ed;
+    color: #17683a;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.provider-label {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: #edf0f7;
+    color: #273149;
+    font-size: 13px;
+}
+
+.result-section {
+    margin-bottom: 22px;
+}
+
+.result-section h2 {
+    margin-top: 0;
+}
+
+.result-item {
+    margin: 12px 0;
+    padding: 16px;
+    border: 1px solid #e2e6ef;
+    border-radius: 10px;
+}
+
+.result-item h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.result-item p {
+    overflow-wrap: anywhere;
+}
+
+.evidence {
+    padding: 10px 12px;
+    border-left: 3px solid #a49cf7;
+    background: #f7f7ff;
+    color: #505a70;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.warning {
+    color: #875b00;
+    background: #fff7df;
+    padding: 9px 12px;
+    border-radius: 7px;
+    font-size: 14px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 18px;
+    color: #6558e8;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.empty-state {
+    color: #687386;
+}
+
+.task-form {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid #e2e6ef;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.task-form label {
+    display: block;
+    margin-top: 8px;
+    margin-bottom: 2px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #273149;
+}
+
+.task-form input,
+.task-form select {
+    display: block;
+    width: 100%;
+    min-height: 42px;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border: 1px solid #d6dbe6;
+    border-radius: 7px;
+    font: inherit;
+    background: white;
+    color: #273149;
+}
+
+.task-form input:focus,
+.task-form select:focus {
+    outline: none;
+    border-color: #6558e8;
+    box-shadow: 0 0 0 3px rgba(101, 88, 232, 0.12);
+}
+
+.task-form button {
+    align-self: flex-start;
+    margin-top: 10px;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 7px;
+    background: #6558e8;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.task-form button:hover {
+    background: #5145cc;
+}
+
+.task-completed {
+    border-left: 4px solid #24a35a;
+}
+
+.task-pending {
+    border-left: 4px solid #e0a52b;
+}
+
+.task-status {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    background: #fff7df;
+    color: #875b00;
+}
+
+.task-status.completed {
+    background: #e6f7ed;
+    color: #17683a;
+}
+
+.task-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 18px 0;
+}
+
+.filter-button {
+    padding: 9px 17px;
+    border: 1px solid #d6dbe6;
+    border-radius: 20px;
+    background: white;
+    color: #273149;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.filter-button:hover {
+    border-color: #6558e8;
+    color: #6558e8;
+}
+
+.filter-button.active {
+    background: #6558e8;
+    border-color: #6558e8;
+    color: white;
+}
+
+.filter-count {
+    margin-left: 5px;
+    font-size: 12px;
+}
+
+.no-filter-results {
+    color: #687386;
+    padding: 12px 0;
+}
+
+.priority-badge {
+    display: inline-block;
+    padding: 5px 11px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.priority-high {
+    background: #fde8e8;
+    color: #b42318;
+}
+
+.priority-medium {
+    background: #fff1d6;
+    color: #9a5b00;
+}
+
+.priority-low {
+    background: #e6f7ed;
+    color: #17683a;
+}
+
+.priority-none {
+    background: #edf0f7;
+    color: #505a70;
+}
+
+.due-alert {
+    display: inline-block;
+    padding: 5px 11px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.due-overdue {
+    background: #fde8e8;
+    color: #b42318;
+}
+
+.due-soon {
+    background: #fff1d6;
+    color: #9a5b00;
+}
+
+.due-on-track {
+    background: #e6f7ed;
+    color: #17683a;
+}
+
+/* Task activity history */
+.activity-history {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e6ef;
+}
+
+.activity-history h4 {
+    margin: 0 0 12px;
+    color: #273149;
+}
+
+.activity-entry {
+    padding: 11px 13px;
+    margin: 9px 0;
+    border-left: 3px solid #6558e8;
+    border-radius: 6px;
+    background: #f7f7ff;
+}
+
+.activity-entry p {
+    margin: 0 0 5px;
+    font-size: 14px;
+}
+
+.activity-entry small {
+    color: #687386;
+    font-size: 12px;
+}
+
+.activity-values {
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.no-activity {
+    color: #687386;
+    font-size: 13px;
+    padding: 10px 0;
+}
+
+/* Task comments */
+.task-comments {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e6ef;
+}
+
+.task-comments h4 {
+    margin: 0 0 14px;
+    color: #273149;
+}
+
+.comment-entry {
+    padding: 13px;
+    margin: 10px 0;
+    border: 1px solid #e2e6ef;
+    border-radius: 8px;
+    background: #fafbff;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.comment-author {
+    font-weight: 700;
+    color: #273149;
+}
+
+.comment-date {
+    color: #687386;
+    font-size: 12px;
+}
+
+.comment-text {
+    margin: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: #424b5d;
+}
+
+.no-comments {
+    color: #687386;
+    font-size: 13px;
+    padding: 8px 0;
+}
+
+.comment-form {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.comment-form label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #273149;
+}
+
+.comment-form input,
+.comment-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 12px;
+    border: 1px solid #d6dbe6;
+    border-radius: 7px;
+    font: inherit;
+    color: #273149;
+    background: white;
+}
+
+.comment-form textarea {
+    min-height: 95px;
+    resize: vertical;
+}
+
+.comment-form input:focus,
+.comment-form textarea:focus {
+    outline: none;
+    border-color: #6558e8;
+    box-shadow: 0 0 0 3px rgba(101, 88, 232, 0.12);
+}
+
+.comment-form button {
+    align-self: flex-start;
+    margin-top: 5px;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 7px;
+    background: #6558e8;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.comment-form button:hover {
+    background: #5145cc;
+}
+
+/* Task attachments */
+.task-attachments {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e6ef;
+}
+
+.task-attachments h4 {
+    margin: 0 0 14px;
+    color: #273149;
+}
+
+.attachment-entry {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px;
+    margin: 9px 0;
+    border: 1px solid #e2e6ef;
+    border-radius: 8px;
+    background: #fafbff;
+}
+
+.attachment-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.attachment-name {
+    display: block;
+    font-weight: 600;
+    color: #273149;
+    overflow-wrap: anywhere;
+}
+
+.attachment-meta {
+    display: block;
+    margin-top: 5px;
+    color: #687386;
+    font-size: 12px;
+}
+
+.attachment-download {
+    display: inline-block;
+    padding: 8px 13px;
+    border-radius: 7px;
+    background: #6558e8;
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.attachment-download:hover {
+    background: #5145cc;
+}
+
+.no-attachments {
+    color: #687386;
+    font-size: 13px;
+    padding: 8px 0;
+}
+
+.attachment-form {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.attachment-form label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #273149;
+}
+
+.attachment-form input[type="file"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #d6dbe6;
+    border-radius: 7px;
+    background: white;
+    font: inherit;
+}
+
+.attachment-hint {
+    color: #687386;
+    font-size: 12px;
+    margin: 0;
+}
+
+.attachment-form button {
+    align-self: flex-start;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 7px;
+    background: #6558e8;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.attachment-form button:hover {
+    background: #5145cc;
+}
+
+@media (max-width: 600px) {
+    .task-form button,
+    .comment-form button,
+    .attachment-form button {
+        width: 100%;
+    }
+
+    .filter-button {
+        flex: 1;
+    }
+
+    .attachment-download {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<a class="back-link" href="{{ url_for('meetings.index') }}">
+    &larr; Back to dashboard
+</a>
+
+<section class="card result-header">
+    <span class="status">{{ meeting.status|capitalize }}</span>
+
+    <h1>{{ meeting.title or "Untitled Meeting" }}</h1>
+
+    <p class="muted">
+        Created
+        {{ meeting.created_at.strftime("%d %b %Y, %I:%M %p") }}
+    </p>
+
+    <p>
+        <strong>Analysis mode:</strong>
+        {% if meeting.analysis_provider == "gemini" %}
+            <span class="provider-label">Google Gemini AI</span>
+        {% else %}
+            <span class="provider-label">Rule-based demo</span>
+        {% endif %}
+    </p>
+</section>
+
+<section class="card result-section">
+    <h2>Meeting summary</h2>
+    <p>{{ meeting.summary or "No summary available." }}</p>
+</section>
+
+<section class="card result-section">
+    <h2>Action items ({{ meeting.action_items|length }})</h2>
+
+    {% if meeting.action_items %}
+
+        <div class="task-filters">
+            <button type="button" class="filter-button active" data-filter="all">
+                All
+                <span class="filter-count">{{ meeting.action_items|length }}</span>
+            </button>
+
+            <button type="button" class="filter-button" data-filter="pending">
+                Pending
+                <span class="filter-count">
+                    {{ meeting.action_items|selectattr("status", "equalto", "pending")|list|length }}
+                </span>
+            </button>
+
+            <button type="button" class="filter-button" data-filter="completed">
+                Completed
+                <span class="filter-count">
+                    {{ meeting.action_items|selectattr("status", "equalto", "completed")|list|length }}
+                </span>
+            </button>
+        </div>
+
+        <p id="filter-message" class="no-filter-results" hidden>
+            No action items in this category.
+        </p>
+
+        <div id="action-items-list">
+            {% for item in meeting.action_items %}
+                <article
+                    class="result-item action-item {% if item.status|lower == 'completed' %}task-completed{% else %}task-pending{% endif %}"
+                    data-status="{{ item.status|lower }}"
+                >
+                    <h3>{{ loop.index }}. {{ item.description }}</h3>
+
+                    <p>
+                        <strong>Current status:</strong>
+                        {% if item.status|lower == "completed" %}
+                            <span class="task-status completed">Completed</span>
+                        {% else %}
+                            <span class="task-status">Pending</span>
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Priority:</strong>
+                        {% if item.priority and item.priority|lower == "high" %}
+                            <span class="priority-badge priority-high">High</span>
+                        {% elif item.priority and item.priority|lower == "medium" %}
+                            <span class="priority-badge priority-medium">Medium</span>
+                        {% elif item.priority and item.priority|lower == "low" %}
+                            <span class="priority-badge priority-low">Low</span>
+                        {% else %}
+                            <span class="priority-badge priority-none">Not assigned</span>
+                        {% endif %}
+                    </p>
+
+                    {% if due_alerts.get(item.id) == "overdue" %}
+                        <p>
+                            <strong>Deadline alert:</strong>
+                            <span class="due-alert due-overdue">Overdue</span>
+                        </p>
+                    {% elif due_alerts.get(item.id) == "due_soon" %}
+                        <p>
+                            <strong>Deadline alert:</strong>
+                            <span class="due-alert due-soon">Due soon</span>
+                        </p>
+                    {% elif due_alerts.get(item.id) == "on_track" %}
+                        <p>
+                            <strong>Deadline alert:</strong>
+                            <span class="due-alert due-on-track">On track</span>
+                        </p>
+                    {% endif %}
+
+                    {% if item.evidence_excerpt %}
+                        <p><strong>Source evidence:</strong></p>
+                        <div class="evidence">{{ item.evidence_excerpt }}</div>
+                    {% endif %}
+
+                    {% if item.uncertainty_flags %}
+                        <p class="warning">
+                            <strong>Needs review:</strong>
+                            {{ item.uncertainty_flags|join(", ")|replace("_", " ") }}
+                        </p>
+                    {% endif %}
+
+                    <form
+                        class="task-form"
+                        method="POST"
+                        action="{{ url_for('meetings.update_action_item', meeting_id=meeting.id, item_id=item.id) }}"
+                    >
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <label for="owner-{{ item.id }}">Task owner</label>
+                        <input
+                            type="text"
+                            id="owner-{{ item.id }}"
+                            name="owner"
+                            maxlength="120"
+                            value="{{ item.owner or '' }}"
+                            placeholder="Enter responsible person's name"
+                        >
+
+                        <label for="deadline-{{ item.id }}">Deadline</label>
+                        <input
+                            type="date"
+                            id="deadline-{{ item.id }}"
+                            name="deadline"
+                            value="{{ item.deadline.strftime('%Y-%m-%d') if item.deadline else '' }}"
+                        >
+
+                        <label for="status-{{ item.id }}">Task status</label>
+                        <select id="status-{{ item.id }}" name="status" required>
+                            <option value="pending" {% if item.status|lower == "pending" %}selected{% endif %}>
+                                Pending
+                            </option>
+                            <option value="completed" {% if item.status|lower == "completed" %}selected{% endif %}>
+                                Completed
+                            </option>
+                        </select>
+
+                        <label for="priority-{{ item.id }}">Task priority</label>
+                        <select id="priority-{{ item.id }}" name="priority" required>
+                            <option value="" {% if not item.priority %}selected{% endif %}>
+                                Not assigned
+                            </option>
+                            <option value="high" {% if item.priority and item.priority|lower == "high" %}selected{% endif %}>
+                                High
+                            </option>
+                            <option value="medium" {% if item.priority and item.priority|lower == "medium" %}selected{% endif %}>
+                                Medium
+                            </option>
+                            <option value="low" {% if item.priority and item.priority|lower == "low" %}selected{% endif %}>
+                                Low
+                            </option>
+                        </select>
+
+                        <button type="submit">Save Changes</button>
+                    </form>
+
+                    <!-- Task Activity History -->
+                    <div class="activity-history">
+                        <h4>Activity History</h4>
+
+                        {% set activities = item.activity_history.all()|sort(attribute="changed_at", reverse=true) %}
+
+                        {% if activities %}
+                            {% for activity in activities %}
+                                <div class="activity-entry">
+                                    <p><strong>{{ activity.field_name }} changed:</strong></p>
+                                    <p class="activity-values">
+                                        {{ activity.old_value or "Not set" }}
+                                        &rarr;
+                                        {{ activity.new_value or "Not set" }}
+                                    </p>
+                                    <small>
+                                        {{ activity.changed_at.strftime("%d %b %Y, %I:%M:%S %p") }}
+                                    </small>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="no-activity">No changes recorded yet.</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Task Comments -->
+                    <div class="task-comments">
+                        <h4>Task Comments</h4>
+
+                        {% set task_comments = item.comments.all()|sort(attribute="created_at", reverse=true) %}
+
+                        {% if task_comments %}
+                            {% for comment in task_comments %}
+                                <div class="comment-entry">
+                                    <div class="comment-header">
+                                        <span class="comment-author">{{ comment.author }}</span>
+                                        <span class="comment-date">
+                                            {{ comment.created_at.strftime("%d %b %Y, %I:%M %p") }}
+                                        </span>
+                                    </div>
+                                    <p class="comment-text">{{ comment.comment }}</p>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="no-comments">
+                                No comments yet. Start the conversation!
+                            </p>
+                        {% endif %}
+
+                        <form
+                            class="comment-form"
+                            method="POST"
+                            action="{{ url_for('meetings.add_task_comment', meeting_id=meeting.id, item_id=item.id) }}"
+                        >
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                            <label for="author-{{ item.id }}">Your name</label>
+                            <input
+                                type="text"
+                                id="author-{{ item.id }}"
+                                name="author"
+                                maxlength="120"
+                                placeholder="Enter your name (optional)"
+                            >
+
+                            <label for="comment-{{ item.id }}">Write a comment</label>
+                            <textarea
+                                id="comment-{{ item.id }}"
+                                name="comment"
+                                maxlength="5000"
+                                required
+                                placeholder="Share an update about this task..."
+                            ></textarea>
+
+                            <button type="submit">Add Comment</button>
+                        </form>
+                    </div>
+
+                    <!-- Task Attachments -->
+                    <div class="task-attachments">
+                        <h4>Task Attachments</h4>
+
+                        {% set task_attachments = item.attachments.all()|sort(attribute="uploaded_at", reverse=true) %}
+
+                        {% if task_attachments %}
+                            {% for attachment in task_attachments %}
+                                <div class="attachment-entry">
+                                    <div class="attachment-info">
+                                        <span class="attachment-name">
+                                            {{ attachment.original_filename }}
+                                        </span>
+
+                                        <span class="attachment-meta">
+                                            {% if attachment.file_size >= 1048576 %}
+                                                {{ "%.2f"|format(attachment.file_size / 1048576) }} MB
+                                            {% else %}
+                                                {{ "%.1f"|format(attachment.file_size / 1024) }} KB
+                                            {% endif %}
+                                            &bull;
+                                            Uploaded {{ attachment.uploaded_at.strftime("%d %b %Y, %I:%M %p") }}
+                                        </span>
+                                    </div>
+
+                                    <a
+                                        class="attachment-download"
+                                        href="{{ url_for('meetings.download_task_attachment', meeting_id=meeting.id, item_id=item.id, attachment_id=attachment.id) }}"
+                                    >
+                                        Download
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="no-attachments">
+                                No attachments yet.
+                            </p>
+                        {% endif %}
+
+                        <form
+                            class="attachment-form"
+                            method="POST"
+                            enctype="multipart/form-data"
+                            action="{{ url_for('meetings.upload_task_attachment', meeting_id=meeting.id, item_id=item.id) }}"
+                        >
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                            <label for="attachment-{{ item.id }}">
+                                Upload a file
+                            </label>
+
+                            <input
+                                type="file"
+                                id="attachment-{{ item.id }}"
+                                name="file"
+                                accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.doc,.docx,.txt,.csv,.xls,.xlsx,.ppt,.pptx"
+                                required
+                            >
+
+                            <p class="attachment-hint">
+                                Allowed: PDF, images, Word, text, CSV, Excel and PowerPoint.
+                                Maximum file size: 10 MB.
+                            </p>
+
+                            <button type="submit">Upload Attachment</button>
+                        </form>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+
+    {% else %}
+        <p class="empty-state">
+            No action items were detected in this transcript.
+        </p>
+    {% endif %}
+</section>
+
+<section class="card result-section">
+    <h2>Decisions ({{ meeting.decisions|length }})</h2>
+
+    {% if meeting.decisions %}
+        {% for decision in meeting.decisions %}
+            <article class="result-item">
+                <h3>Decision {{ loop.index }}</h3>
+                <p>{{ decision.description }}</p>
+
+                {% if decision.evidence_excerpt %}
+                    <p><strong>Source evidence:</strong></p>
+                    <div class="evidence">{{ decision.evidence_excerpt }}</div>
+                {% endif %}
+            </article>
+        {% endfor %}
+    {% else %}
+        <p class="empty-state">
+            No decisions were detected in this transcript.
+        </p>
+    {% endif %}
+</section>
+
+<section class="card result-section">
+    <h2>Original transcript</h2>
+
+    <details>
+        <summary>View full transcript</summary>
+        <pre style="white-space: pre-wrap; overflow-wrap: anywhere;">{{ meeting.transcript }}</pre>
+    </details>
+</section>
+
+<script>
+    const filterButtons = document.querySelectorAll(".filter-button");
+    const actionItems = document.querySelectorAll(".action-item");
+    const filterMessage = document.getElementById("filter-message");
+
+    filterButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+            const selectedFilter = button.dataset.filter;
+            let visibleCount = 0;
+
+            filterButtons.forEach(function (filterButton) {
+                filterButton.classList.remove("active");
+            });
+
+            button.classList.add("active");
+
+            actionItems.forEach(function (item) {
+                const itemStatus = item.dataset.status;
+
+                if (
+                    selectedFilter === "all" ||
+                    itemStatus === selectedFilter
+                ) {
+                    item.style.display = "";
+                    visibleCount++;
+                } else {
+                    item.style.display = "none";
+                }
+            });
+
+            filterMessage.hidden = visibleCount !== 0;
+        });
+    });
+</script>
+{% endblock %}

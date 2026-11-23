@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}MeetingFlow{% endblock %}</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f4f6fb;
+            color: #192238;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        header {
+            padding: 18px 7%;
+            background: white;
+            border-bottom: 1px solid #e2e6ef;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        header a {
+            color: #6558e8;
+            font-size: 22px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .header-provider {
+            color: #687386;
+            font-size: 14px;
+        }
+
+        .header-user {
+            color: #192238;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-nav a {
+            font-size: 14px;
+            font-weight: bold;
+            color: #6558e8;
+        }
+
+        .logout-form {
+            margin: 0;
+        }
+
+        .logout-button {
+            padding: 8px 13px;
+            border: none;
+            border-radius: 7px;
+            background: #6558e8;
+            color: white;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .logout-button:hover {
+            background: #5144d0;
+        }
+
+        main {
+            width: min(900px, 92%);
+            margin: 35px auto;
+        }
+
+        .card {
+            margin-bottom: 22px;
+            padding: 24px;
+            background: white;
+            border: 1px solid #e2e6ef;
+            border-radius: 14px;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #6558e8;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #5144d0;
+        }
+
+        .flash {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #fff0f0;
+            color: #a12424;
+        }
+
+        .flash.success {
+            background: #e6f7ed;
+            color: #187344;
+        }
+
+        .muted {
+            color: #687386;
+        }
+
+        footer {
+            padding: 20px;
+            color: #687386;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 15px 5%;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+                gap: 10px;
+            }
+        }
+
+        {% block extra_style %}{% endblock %}
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="{{ url_for('meetings.index') }}">MeetingFlow</a>
+
+        <div class="header-right">
+            <span class="header-provider">
+                {% if config.get("AI_PROVIDER") == "gemini" %}
+                    Google Gemini AI
+                {% else %}
+                    Rule-based demo
+                {% endif %}
+            </span>
+
+            <div class="header-nav">
+                {% if current_user.is_authenticated %}
+                    <span class="header-user">
+                        Hi, {{ current_user.username }}
+                    </span>
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('auth.logout') }}"
+                        class="logout-form"
+                    >
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}"
+                        >
+
+                        <button type="submit" class="logout-button">
+                            Logout
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}">Login</a>
+                    <a href="{{ url_for('auth.register') }}">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        AI-Powered Meeting-to-Action Assistant ·
+        {% if config.get("AI_PROVIDER") == "gemini" %}
+            Powered by Google Gemini
+        {% else %}
+            Rule-based demo
+        {% endif %}
+    </footer>
+</body>
+</html>

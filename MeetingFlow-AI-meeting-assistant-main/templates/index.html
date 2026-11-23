@@ -1,0 +1,1228 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dashboard | MeetingFlow{% endblock %}
+
+{% block extra_style %}
+.hero {
+    margin-bottom: 25px;
+}
+
+.hero h1 {
+    margin-bottom: 8px;
+    font-size: 32px;
+}
+
+.hero p {
+    color: #687386;
+    margin-top: 0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.stat-card {
+    padding: 18px;
+    border: 1px solid #e2e6ef;
+    border-radius: 10px;
+    background: white;
+}
+
+.stat-card p {
+    margin: 0 0 10px;
+    color: #687386;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.stat-number {
+    display: block;
+    font-size: 30px;
+    font-weight: 700;
+    color: #192238;
+}
+
+.stat-icon {
+    display: inline-flex;
+    margin-bottom: 10px;
+    font-size: 22px;
+}
+
+.stat-completed .stat-number {
+    color: #24a35a;
+}
+
+.stat-pending .stat-number {
+    color: #c58b19;
+}
+
+.progress-card {
+    margin-bottom: 25px;
+}
+
+.progress-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.progress-heading h2 {
+    margin: 0;
+    font-size: 19px;
+}
+
+.progress-percentage {
+    font-size: 20px;
+    font-weight: 700;
+    color: #6558e8;
+}
+
+.progress-track {
+    width: 100%;
+    height: 12px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #edf0f7;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 20px;
+    background: #24a35a;
+    transition: width 0.3s ease;
+}
+
+.progress-note {
+    margin-bottom: 0;
+    color: #687386;
+    font-size: 13px;
+}
+
+textarea {
+    display: block;
+    width: 100%;
+    min-height: 240px;
+    margin: 12px 0;
+    padding: 15px;
+    border: 1px solid #d9deea;
+    border-radius: 10px;
+    font: inherit;
+    resize: vertical;
+}
+
+textarea:focus {
+    outline: 2px solid #c5c0ff;
+    border-color: #6558e8;
+}
+
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.secondary-button {
+    background: #edf0f7;
+    color: #273149;
+}
+
+.secondary-button:hover {
+    background: #dfe4ef;
+}
+
+.meeting-search {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0 20px;
+}
+
+.meeting-search input {
+    flex: 1;
+    min-width: 0;
+    padding: 11px 13px;
+    border: 1px solid #d6dbe6;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.meeting-search input:focus {
+    outline: none;
+    border-color: #6558e8;
+    box-shadow: 0 0 0 3px rgba(101, 88, 232, 0.12);
+}
+
+.meeting-search button,
+.clear-search {
+    padding: 11px 17px;
+    border: none;
+    border-radius: 8px;
+    background: #6558e8;
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.meeting-search button:hover {
+    background: #5145cc;
+}
+
+.clear-search {
+    display: inline-block;
+    background: #edf0f7;
+    color: #273149;
+}
+
+.meeting-list {
+    display: grid;
+    gap: 12px;
+}
+
+.meeting-link {
+    display: block;
+    padding: 15px;
+    border: 1px solid #e2e6ef;
+    border-radius: 9px;
+    color: #192238;
+    text-decoration: none;
+}
+
+.meeting-link:hover {
+    border-color: #6558e8;
+    background: #fafaff;
+}
+
+.meeting-link strong {
+    display: block;
+}
+
+.provider-label {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: #edf0f7;
+    color: #273149;
+    font-size: 13px;
+}
+
+.search-info {
+    margin-bottom: 14px;
+    color: #687386;
+    font-size: 14px;
+}
+
+/* Dashboard task management */
+.task-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 18px 0;
+}
+
+.task-summary {
+    padding: 15px;
+    border: 1px solid #e2e6ef;
+    border-radius: 9px;
+    background: #fff;
+}
+
+.task-summary span {
+    display: block;
+    color: #687386;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.task-summary strong {
+    display: block;
+    margin-top: 6px;
+    font-size: 25px;
+}
+
+.task-overdue strong {
+    color: #dc3545;
+}
+
+.task-upcoming strong {
+    color: #c58b19;
+}
+
+.task-completed strong {
+    color: #24a35a;
+}
+
+.task-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 18px 0;
+}
+
+.task-filter {
+    padding: 8px 14px;
+    border: 1px solid #d9deea;
+    border-radius: 20px;
+    background: white;
+    color: #273149;
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+}
+
+.task-filter.active {
+    background: #6558e8;
+    border-color: #6558e8;
+    color: white;
+}
+
+.dashboard-task-list {
+    display: grid;
+    gap: 12px;
+}
+
+.dashboard-task {
+    padding: 16px;
+    border: 1px solid #e2e6ef;
+    border-radius: 9px;
+    background: white;
+}
+
+.dashboard-task-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.dashboard-task h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    color: #192238;
+}
+
+.dashboard-task p {
+    margin: 5px 0;
+    color: #687386;
+    font-size: 13px;
+}
+
+.task-meeting-link {
+    display: inline-block;
+    margin-top: 8px;
+    color: #6558e8;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.task-meeting-link:hover {
+    text-decoration: underline;
+}
+
+.task-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.task-badge {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.badge-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.badge-completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.badge-overdue {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.badge-upcoming {
+    background: #fff0d5;
+    color: #925d00;
+}
+
+.badge-high {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.badge-medium {
+    background: #ffe5cc;
+    color: #9a4f00;
+}
+
+.badge-low {
+    background: #d4edda;
+    color: #155724;
+}
+
+.badge-unassigned {
+    background: #edf0f7;
+    color: #526078;
+}
+
+.task-empty {
+    padding: 25px 15px;
+    text-align: center;
+    color: #687386;
+    border: 1px dashed #d9deea;
+    border-radius: 9px;
+}
+
+/* Quick task editing */
+.task-edit-details {
+    margin-top: 14px;
+    border-top: 1px solid #e8ebf2;
+    padding-top: 12px;
+}
+
+.task-edit-details summary {
+    display: inline-block;
+    color: #6558e8;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+}
+
+.task-edit-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.task-edit-details summary::before {
+    content: "✏️ ";
+}
+
+.task-edit-details[open] summary {
+    margin-bottom: 14px;
+}
+
+.task-edit-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+    padding: 15px;
+    border-radius: 9px;
+    background: #f8f9fc;
+}
+
+.task-edit-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.task-edit-field label {
+    color: #526078;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.task-edit-field input,
+.task-edit-field select {
+    width: 100%;
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid #d9deea;
+    border-radius: 7px;
+    background: white;
+    color: #273149;
+    font: inherit;
+    font-size: 13px;
+}
+
+.task-edit-field input:focus,
+.task-edit-field select:focus {
+    outline: none;
+    border-color: #6558e8;
+    box-shadow: 0 0 0 3px rgba(101, 88, 232, 0.1);
+}
+
+.task-edit-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 3px;
+}
+
+.task-save-button {
+    padding: 10px 17px;
+    border: none;
+    border-radius: 7px;
+    background: #6558e8;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.task-save-button:hover {
+    background: #5145cc;
+}
+
+/* Task pagination */
+.task-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #e2e6ef;
+}
+
+.pagination-info {
+    color: #687386;
+    font-size: 13px;
+}
+
+.pagination-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagination-button {
+    padding: 8px 14px;
+    border: 1px solid #d9deea;
+    border-radius: 7px;
+    background: white;
+    color: #273149;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.pagination-button:hover:not(:disabled) {
+    background: #edf0f7;
+    border-color: #6558e8;
+}
+
+.pagination-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.pagination-page {
+    color: #273149;
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 65px;
+    text-align: center;
+}
+
+@media (max-width: 800px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .hero h1 {
+        font-size: 26px;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    .stat-number {
+        font-size: 25px;
+    }
+
+    .progress-heading {
+        align-items: flex-start;
+    }
+
+    .meeting-search {
+        flex-direction: column;
+    }
+
+    .meeting-search button {
+        width: 100%;
+    }
+
+    .task-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-task-top {
+        flex-direction: column;
+    }
+
+    .task-pagination {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pagination-buttons {
+        justify-content: center;
+    }
+
+    .pagination-info {
+        text-align: center;
+    }
+
+    .task-edit-form {
+        grid-template-columns: 1fr;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Turn meetings into action.</h1>
+    <p>
+        Convert meeting transcripts into structured action items,
+        decisions, and follow-ups.
+    </p>
+</section>
+
+<section class="stats-grid">
+    <article class="stat-card">
+        <span class="stat-icon">📅</span>
+        <p>Total Meetings</p>
+        <strong class="stat-number">{{ total_meetings }}</strong>
+    </article>
+
+    <article class="stat-card">
+        <span class="stat-icon">📋</span>
+        <p>Total Action Items</p>
+        <strong class="stat-number">{{ total_tasks }}</strong>
+    </article>
+
+    <article class="stat-card stat-completed">
+        <span class="stat-icon">✅</span>
+        <p>Completed Tasks</p>
+        <strong class="stat-number">{{ completed_tasks }}</strong>
+    </article>
+
+    <article class="stat-card stat-pending">
+        <span class="stat-icon">⏳</span>
+        <p>Pending Tasks</p>
+        <strong class="stat-number">{{ pending_tasks }}</strong>
+    </article>
+</section>
+
+<section class="card progress-card">
+    <div class="progress-heading">
+        <h2>Overall Task Progress</h2>
+        <span class="progress-percentage">
+            {{ completion_percentage }}%
+        </span>
+    </div>
+
+    <div
+        class="progress-track"
+        role="progressbar"
+        aria-label="Overall task completion"
+        aria-valuenow="{{ completion_percentage }}"
+        aria-valuemin="0"
+        aria-valuemax="100"
+    >
+        <div
+            class="progress-fill"
+            style="width: {{ completion_percentage }}%;"
+        ></div>
+    </div>
+
+    <p class="progress-note">
+        {{ completed_tasks }} out of {{ total_tasks }} tasks completed.
+    </p>
+</section>
+
+<!-- Dashboard-wide task management -->
+<section class="card">
+    <h2>📋 Task Management</h2>
+    <p class="muted">
+        Track and manage action items from all your meetings in one place.
+    </p>
+
+    <div class="task-summary-grid">
+        <div class="task-summary task-overdue">
+            <span>Overdue Tasks</span>
+            <strong>{{ overdue_count }}</strong>
+        </div>
+
+        <div class="task-summary task-upcoming">
+            <span>Due Within 3 Days</span>
+            <strong>{{ upcoming_count }}</strong>
+        </div>
+
+        <div class="task-summary task-completed">
+            <span>Completed Tasks</span>
+            <strong>{{ completed_tasks }}</strong>
+        </div>
+    </div>
+
+    <div class="task-filters">
+        <button type="button" class="task-filter active" data-filter="all">
+            All ({{ all_tasks|length }})
+        </button>
+
+        <button type="button" class="task-filter" data-filter="pending">
+            Pending ({{ pending_tasks }})
+        </button>
+
+        <button type="button" class="task-filter" data-filter="completed">
+            Completed ({{ completed_tasks }})
+        </button>
+
+        <button type="button" class="task-filter" data-filter="overdue">
+            Overdue ({{ overdue_count }})
+        </button>
+
+        <button type="button" class="task-filter" data-filter="upcoming">
+            Upcoming ({{ upcoming_count }})
+        </button>
+    </div>
+
+    {% if all_tasks %}
+        <div class="dashboard-task-list" id="dashboard-task-list">
+            {% for item in all_tasks %}
+                {% set task_status = (item.status or "pending")|lower %}
+                {% set task_priority = (item.priority or "")|lower %}
+
+                {% if item in overdue_tasks %}
+                    {% set deadline_category = "overdue" %}
+                {% elif item in upcoming_tasks %}
+                    {% set deadline_category = "upcoming" %}
+                {% else %}
+                    {% set deadline_category = "normal" %}
+                {% endif %}
+
+                <article
+                    class="dashboard-task"
+                    data-status="{{ task_status }}"
+                    data-deadline="{{ deadline_category }}"
+                >
+                    <div class="dashboard-task-top">
+                        <div>
+                            <h3>{{ item.description }}</h3>
+
+                            <p>
+                                <strong>Owner:</strong>
+                                {{ item.owner or "Not assigned" }}
+                            </p>
+
+                            <p>
+                                <strong>Deadline:</strong>
+                                {% if item.deadline %}
+                                    {{ item.deadline.strftime("%d %b %Y") }}
+                                {% else %}
+                                    Not set
+                                {% endif %}
+                            </p>
+
+                            <a
+                                class="task-meeting-link"
+                                href="{{ url_for(
+                                    'meetings.meeting_detail',
+                                    meeting_id=item.meeting_id
+                                ) }}"
+                            >
+                                📅 {{ item.meeting.title or "Untitled Meeting" }}
+                                · View meeting
+                            </a>
+                        </div>
+
+                        <div class="task-badges">
+                            {% if task_status == "completed" %}
+                                <span class="task-badge badge-completed">
+                                    Completed
+                                </span>
+                            {% else %}
+                                <span class="task-badge badge-pending">
+                                    Pending
+                                </span>
+                            {% endif %}
+
+                            {% if deadline_category == "overdue" %}
+                                <span class="task-badge badge-overdue">
+                                    Overdue
+                                </span>
+                            {% elif deadline_category == "upcoming" %}
+                                <span class="task-badge badge-upcoming">
+                                    Due soon
+                                </span>
+                            {% endif %}
+
+                            {% if task_priority == "high" %}
+                                <span class="task-badge badge-high">High</span>
+                            {% elif task_priority == "medium" %}
+                                <span class="task-badge badge-medium">Medium</span>
+                            {% elif task_priority == "low" %}
+                                <span class="task-badge badge-low">Low</span>
+                            {% else %}
+                                <span class="task-badge badge-unassigned">
+                                    No priority
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Quick task editor -->
+                    <details class="task-edit-details">
+                        <summary>Edit task</summary>
+
+                        <form
+                            class="task-edit-form"
+                            method="POST"
+                            action="{{ url_for(
+                                'meetings.update_dashboard_action_item',
+                                item_id=item.id
+                            ) }}"
+                        >
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                            <div class="task-edit-field">
+                                <label for="owner-{{ item.id }}">
+                                    Task Owner
+                                </label>
+                                <input
+                                    type="text"
+                                    id="owner-{{ item.id }}"
+                                    name="owner"
+                                    maxlength="120"
+                                    value="{{ item.owner or '' }}"
+                                    placeholder="Enter owner name"
+                                >
+                            </div>
+
+                            <div class="task-edit-field">
+                                <label for="deadline-{{ item.id }}">
+                                    Due Date
+                                </label>
+                                <input
+                                    type="date"
+                                    id="deadline-{{ item.id }}"
+                                    name="deadline"
+                                    value="{% if item.deadline %}{{ item.deadline.strftime('%Y-%m-%d') }}{% endif %}"
+                                >
+                            </div>
+
+                            <div class="task-edit-field">
+                                <label for="priority-{{ item.id }}">
+                                    Priority
+                                </label>
+                                <select
+                                    id="priority-{{ item.id }}"
+                                    name="priority"
+                                >
+                                    <option value="" {% if not task_priority %}selected{% endif %}>
+                                        Not assigned
+                                    </option>
+                                    <option value="high" {% if task_priority == "high" %}selected{% endif %}>
+                                        High
+                                    </option>
+                                    <option value="medium" {% if task_priority == "medium" %}selected{% endif %}>
+                                        Medium
+                                    </option>
+                                    <option value="low" {% if task_priority == "low" %}selected{% endif %}>
+                                        Low
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="task-edit-field">
+                                <label for="status-{{ item.id }}">
+                                    Task Status
+                                </label>
+                                <select
+                                    id="status-{{ item.id }}"
+                                    name="status"
+                                >
+                                    <option value="pending" {% if task_status == "pending" %}selected{% endif %}>
+                                        Pending
+                                    </option>
+                                    <option value="completed" {% if task_status == "completed" %}selected{% endif %}>
+                                        Completed
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="task-edit-actions">
+                                <button
+                                    type="submit"
+                                    class="task-save-button"
+                                >
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </details>
+                </article>
+            {% endfor %}
+        </div>
+
+        <p class="task-empty" id="no-filtered-tasks" hidden>
+            No tasks found in this category.
+        </p>
+
+        <div class="task-pagination" id="task-pagination">
+            <span class="pagination-info" id="pagination-info">
+                Showing 0–0 of 0 tasks
+            </span>
+
+            <div class="pagination-buttons">
+                <button
+                    type="button"
+                    class="pagination-button"
+                    id="previous-page"
+                    disabled
+                >
+                    ← Previous
+                </button>
+
+                <span class="pagination-page" id="pagination-page">
+                    Page 1 of 1
+                </span>
+
+                <button
+                    type="button"
+                    class="pagination-button"
+                    id="next-page"
+                    disabled
+                >
+                    Next →
+                </button>
+            </div>
+        </div>
+    {% else %}
+        <div class="task-empty">
+            No action items yet. Analyze a meeting to create your first tasks!
+        </div>
+    {% endif %}
+</section>
+
+<section class="card">
+    <h2>Analyze a meeting</h2>
+
+    {% if ai_provider == "gemini" %}
+        <p class="muted">
+            AI-powered analysis is enabled using Google Gemini.
+            Review generated action items and decisions before relying on them.
+        </p>
+        <span class="provider-label">Google Gemini AI</span>
+    {% else %}
+        <p class="muted">
+            Demo mode uses rule-based transcript analysis.
+            Switch to a configured AI provider for AI-powered analysis.
+        </p>
+        <span class="provider-label">Rule-based demo</span>
+    {% endif %}
+
+    <form
+        action="{{ url_for('meetings.create_meeting') }}"
+        method="POST"
+    >
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <label for="transcript">
+            <strong>Meeting transcript</strong>
+        </label>
+
+        <textarea
+            id="transcript"
+            name="transcript"
+            maxlength="{{ max_length }}"
+            placeholder="Paste your meeting transcript here..."
+            required
+        ></textarea>
+
+        <div class="muted">
+            <span id="character-count">0</span>
+            / {{ "{:,}".format(max_length) }} characters
+        </div>
+
+        <div class="form-actions">
+            <button type="submit">Analyze Meeting</button>
+
+            <button
+                type="button"
+                class="secondary-button"
+                id="sample-button"
+            >
+                Load Sample
+            </button>
+
+            <button
+                type="button"
+                class="secondary-button"
+                id="clear-button"
+            >
+                Clear
+            </button>
+        </div>
+    </form>
+</section>
+
+<section class="card">
+    <h2>Recent meetings</h2>
+
+    <form
+        class="meeting-search"
+        method="GET"
+        action="{{ url_for('meetings.index') }}"
+    >
+        <input
+            type="search"
+            name="search"
+            value="{{ search_query }}"
+            placeholder="Search meetings by title..."
+            aria-label="Search meetings by title"
+        >
+        <button type="submit">Search</button>
+        {% if search_query %}
+            <a
+                class="clear-search"
+                href="{{ url_for('meetings.index') }}"
+            >
+                Clear
+            </a>
+        {% endif %}
+    </form>
+
+    {% if search_query %}
+        <p class="search-info">
+            Search results for "{{ search_query }}"
+        </p>
+    {% endif %}
+
+    {% if recent_meetings %}
+        <div class="meeting-list">
+            {% for meeting in recent_meetings %}
+                <a
+                    class="meeting-link"
+                    href="{{ url_for(
+                        'meetings.meeting_detail',
+                        meeting_id=meeting.id
+                    ) }}"
+                >
+                    <strong>
+                        {{ meeting.title or "Untitled Meeting" }}
+                    </strong>
+
+                    <span class="muted">
+                        {{ meeting.created_at.strftime("%d %b %Y, %I:%M %p") }}
+                        · {{ meeting.action_items|length }} action items
+                        · {{ meeting.decisions|length }} decisions
+                    </span>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="muted">
+            {% if search_query %}
+                No meetings found matching "{{ search_query }}".
+            {% else %}
+                No meetings yet. Analyze your first transcript to get started!
+            {% endif %}
+        </p>
+    {% endif %}
+</section>
+
+<script>
+    // Transcript character counter and sample controls
+    const transcriptBox = document.getElementById("transcript");
+    const characterCount = document.getElementById("character-count");
+
+    const sampleTranscript = {{ sample_transcript|tojson }};
+
+    function updateCharacterCount() {
+        characterCount.textContent = transcriptBox.value.length;
+    }
+
+    transcriptBox.addEventListener("input", updateCharacterCount);
+
+    document
+        .getElementById("sample-button")
+        .addEventListener("click", function () {
+            transcriptBox.value = sampleTranscript;
+            updateCharacterCount();
+            transcriptBox.focus();
+        });
+
+    document
+        .getElementById("clear-button")
+        .addEventListener("click", function () {
+            transcriptBox.value = "";
+            updateCharacterCount();
+            transcriptBox.focus();
+        });
+
+    // Dashboard task filters and pagination
+    const taskFilterButtons = document.querySelectorAll(".task-filter");
+    const dashboardTasks = Array.from(
+        document.querySelectorAll(".dashboard-task")
+    );
+
+    const noFilteredTasks = document.getElementById("no-filtered-tasks");
+    const paginationContainer = document.getElementById("task-pagination");
+    const paginationInfo = document.getElementById("pagination-info");
+    const paginationPage = document.getElementById("pagination-page");
+    const previousPageButton = document.getElementById("previous-page");
+    const nextPageButton = document.getElementById("next-page");
+
+    const tasksPerPage = 10;
+
+    let selectedFilter = "all";
+    let currentPage = 1;
+
+    function getFilteredTasks() {
+        return dashboardTasks.filter(function (task) {
+            const status = task.dataset.status;
+            const deadline = task.dataset.deadline;
+
+            if (selectedFilter === "all") {
+                return true;
+            }
+
+            if (selectedFilter === "pending") {
+                return status === "pending";
+            }
+
+            if (selectedFilter === "completed") {
+                return status === "completed";
+            }
+
+            if (selectedFilter === "overdue") {
+                return status === "pending" && deadline === "overdue";
+            }
+
+            if (selectedFilter === "upcoming") {
+                return status === "pending" && deadline === "upcoming";
+            }
+
+            return false;
+        });
+    }
+
+    function updateTaskDisplay() {
+        const filteredTasks = getFilteredTasks();
+
+        const totalTasks = filteredTasks.length;
+        const totalPages = Math.max(
+            1,
+            Math.ceil(totalTasks / tasksPerPage)
+        );
+
+        currentPage = Math.min(currentPage, totalPages);
+
+        const startIndex = (currentPage - 1) * tasksPerPage;
+        const endIndex = Math.min(
+            startIndex + tasksPerPage,
+            totalTasks
+        );
+
+        dashboardTasks.forEach(function (task) {
+            task.style.display = "none";
+        });
+
+        filteredTasks.forEach(function (task, index) {
+            if (index >= startIndex && index < endIndex) {
+                task.style.display = "";
+            }
+        });
+
+        if (noFilteredTasks) {
+            noFilteredTasks.hidden = totalTasks !== 0;
+        }
+
+        if (paginationInfo) {
+            if (totalTasks === 0) {
+                paginationInfo.textContent = "Showing 0 tasks";
+            } else {
+                paginationInfo.textContent =
+                    "Showing " +
+                    (startIndex + 1) +
+                    "–" +
+                    endIndex +
+                    " of " +
+                    totalTasks +
+                    " tasks";
+            }
+        }
+
+        if (paginationPage) {
+            paginationPage.textContent =
+                "Page " + currentPage + " of " + totalPages;
+        }
+
+        if (previousPageButton) {
+            previousPageButton.disabled = currentPage === 1;
+        }
+
+        if (nextPageButton) {
+            nextPageButton.disabled = currentPage === totalPages;
+        }
+
+        if (paginationContainer) {
+            paginationContainer.style.display =
+                totalTasks > tasksPerPage ? "flex" : "none";
+        }
+    }
+
+    taskFilterButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+            selectedFilter = button.dataset.filter;
+
+            taskFilterButtons.forEach(function (filterButton) {
+                filterButton.classList.remove("active");
+            });
+
+            button.classList.add("active");
+            currentPage = 1;
+
+            updateTaskDisplay();
+        });
+    });
+
+    if (previousPageButton) {
+        previousPageButton.addEventListener("click", function () {
+            if (currentPage > 1) {
+                currentPage--;
+                updateTaskDisplay();
+            }
+        });
+    }
+
+    if (nextPageButton) {
+        nextPageButton.addEventListener("click", function () {
+            const filteredTasks = getFilteredTasks();
+            const totalPages = Math.ceil(
+                filteredTasks.length / tasksPerPage
+            );
+
+            if (currentPage < totalPages) {
+                currentPage++;
+                updateTaskDisplay();
+            }
+        });
+    }
+
+    updateTaskDisplay();
+</script>
+{% endblock %}
